@@ -11,7 +11,7 @@ export interface InvoiceData {
   datum: string;
   modell: string;
   farbe: string;
-  kategorien: string;
+  kategorien?: string;
   sonderWuensche: {
     text: string;
     photo1: File | null;

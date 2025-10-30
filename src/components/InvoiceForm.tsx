@@ -243,7 +243,7 @@ export default function InvoiceForm({ data, onDataChange, onSubmit, isSubmitting
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 <Tag className="inline w-4 h-4 mr-1" />
-                Kategorien *
+                Kategorien
               </label>
               <input
                 type="text"
@@ -251,7 +251,6 @@ export default function InvoiceForm({ data, onDataChange, onSubmit, isSubmitting
                 onChange={(e) => handleInputChange('kategorien', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Wohnzimmer, Polstermöbel"
-                required
               />
             </div>
           </div>
@@ -271,6 +270,7 @@ export default function InvoiceForm({ data, onDataChange, onSubmit, isSubmitting
                   checked={data.versandoption === 'Versand aus Depot'}
                   onChange={(e) => handleInputChange('versandoption', e.target.value)}
                   className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 focus:ring-2"
+                  required
                 />
                 <label htmlFor="depot" className="ml-3 text-sm font-medium text-gray-900">
                   Versand aus Depot
@@ -285,6 +285,7 @@ export default function InvoiceForm({ data, onDataChange, onSubmit, isSubmitting
                   checked={data.versandoption === 'Versand aus Türkei'}
                   onChange={(e) => handleInputChange('versandoption', e.target.value)}
                   className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 focus:ring-2"
+                  required
                 />
                 <label htmlFor="turkey" className="ml-3 text-sm font-medium text-gray-900">
                   Versand aus Türkei

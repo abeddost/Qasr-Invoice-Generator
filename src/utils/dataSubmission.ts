@@ -17,7 +17,9 @@ export const submitToGoogleAppsScript = async (data: InvoiceData): Promise<void>
     formData.append('Datum', data.datum);
     formData.append('Modell', data.modell);
     formData.append('Farbe', data.farbe);
-    formData.append('Kategorien', data.kategorien);
+    if (typeof data.kategorien === 'string' && data.kategorien.trim() !== '') {
+      formData.append('Kategorien', data.kategorien);
+    }
     formData.append('Sonderwuensche_Text', data.sonderWuensche.text);
     formData.append('Lieferdatum', data.lieferdatum);
     formData.append('Anzahlung', data.anzahlung.toString());
