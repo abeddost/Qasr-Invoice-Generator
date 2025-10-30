@@ -246,25 +246,92 @@ export default function InvoicePreview({ data, companyInfo }: InvoicePreviewProp
 
         {/* Return and Cancellation Terms */}
         <div className="mt-8 border-t pt-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Rückgabe- und Stornierungsbedingungen</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">
+            Rückgabe-, Stornierungs-, Gewährleistungs- und Lieferbedingungen
+          </h2>
           <div className="bg-yellow-50 rounded-lg p-6 border border-yellow-200">
-            <div className="space-y-3 text-sm text-gray-700">
-              <p className="flex items-start">
-                <span className="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                Bestellungen können innerhalb von 24 Stunden kostenlos storniert werden.
-              </p>
-              <p className="flex items-start">
-                <span className="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                Nach 24 Stunden bis vor Lieferung fällt eine Stornogebühr von 20 % des Kaufpreises an.
-              </p>
-              <p className="flex items-start">
-                <span className="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                Sonderanfertigungen oder speziell bestellte Waren sind von Rückgabe und Stornierung ausgeschlossen.
-              </p>
-              <p className="flex items-start">
-                <span className="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                Nach Lieferung sind Rückgaben nur bei Mängeln oder Schäden möglich.
-              </p>
+            <div className="space-y-4 text-sm text-gray-700 text-justify">
+              {/* Stornierung */}
+              <div>
+                <h3 className="font-bold text-gray-900 mb-2">Stornierung:</h3>
+                <div className="space-y-2 pl-5">
+                  <p>
+                    Bestellungen können innerhalb von 24 Stunden nach
+                    <br />
+                    Auftragserteilung kostenlos storniert werden.
+                  </p>
+                  <p>
+                    Nach Ablauf von 24 Stunden bis vor der Lieferung fällt
+                    <br />
+                    eine Stornogebühr von 20 % des Kaufpreises an.
+                  </p>
+                </div>
+              </div>
+
+              {/* Rückgabe */}
+              <div>
+                <h3 className="font-bold text-gray-900 mb-2">Rückgabe:</h3>
+                <div className="space-y-2 pl-5">
+                  <p>
+                    Nach Lieferung sind Rückgaben nur bei Mängeln oder
+                    <br />
+                    Schäden möglich.
+                  </p>
+                  <p>
+                    Sonderanfertigungen oder speziell bestellte Waren sind
+                    <br />
+                    von Rückgabe und Stornierung ausgeschlossen.
+                  </p>
+                </div>
+              </div>
+
+              {/* Gewährleistung */}
+              <div>
+                <h3 className="font-bold text-gray-900 mb-2">Gewährleistung:</h3>
+                <div className="space-y-2 pl-5">
+                  <p>
+                    Für alle Möbelstücke gilt eine 2-jährige gesetzliche
+                    <br />
+                    Gewährleistung auf Herstellungsfehler und
+                    <br />
+                    Materialmängel ab Lieferdatum.
+                  </p>
+                  <p>
+                    Von der Gewährleistung ausgeschlossen sind normale
+                    <br />
+                    Abnutzung, unsachgemäße Nutzung sowie elektronische
+                    <br />
+                    Geräte – für diese wird keine Gewährleistung oder
+                    <br />
+                    Garantie übernommen.
+                  </p>
+                </div>
+              </div>
+
+              {/* Lieferung */}
+              <div>
+                <h3 className="font-bold text-gray-900 mb-2">Lieferung:</h3>
+                <div className="space-y-2 pl-5">
+                  <p>
+                    Wir bemühen uns, alle Bestellungen pünktlich und
+                    <br />
+                    zuverlässig zu liefern.
+                  </p>
+                  <p>
+                    Bitte beachten Sie jedoch, dass es in seltenen Fällen
+                    <br />
+                    zu Verzögerungen kommen kann, die außerhalb unseres
+                    <br />
+                    Einflussbereichs liegen – z. B. durch Zollabfertigung,
+                    <br />
+                    Transportprobleme oder unvorhersehbare Ereignisse.
+                    <br />
+                    In solchen Fällen übernehmen wir keine Haftung für
+                    <br />
+                    Lieferverzögerungen.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

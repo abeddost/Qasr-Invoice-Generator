@@ -25,10 +25,23 @@ export const generatePDF = async (data: InvoiceData, companyInfo: CompanyInfo): 
         htmlImg.style.objectFit = 'contain';
         htmlImg.style.display = 'inline-block';
       } else {
-        // Photo styling for PDF
-        htmlImg.style.width = '300px';
-        htmlImg.style.height = '240px';
-        htmlImg.style.objectFit = 'cover';
+        // Photo styling for PDF - use natural dimensions with max constraint
+        const naturalWidth = htmlImg.naturalWidth;
+        const naturalHeight = htmlImg.naturalHeight;
+        
+        if (naturalWidth && naturalHeight) {
+          // Maintain aspect ratio, fit within 600px width
+          const maxWidth = 600;
+          const aspectRatio = naturalHeight / naturalWidth;
+          htmlImg.style.width = `${Math.min(naturalWidth, maxWidth)}px`;
+          htmlImg.style.height = `${Math.min(naturalWidth, maxWidth) * aspectRatio}px`;
+        } else {
+          // Fallback if natural dimensions not available
+          htmlImg.style.width = '600px';
+          htmlImg.style.height = 'auto';
+        }
+        
+        htmlImg.style.objectFit = 'contain';
         htmlImg.style.display = 'block';
         htmlImg.style.margin = '0 auto 8px auto';
       }
@@ -64,7 +77,7 @@ export const generatePDF = async (data: InvoiceData, companyInfo: CompanyInfo): 
 
     const imgData = canvas.toDataURL('image/png');
     const imgWidth = 210; // A4 width in mm
-    const pageHeight = 295; // A4 height in mm
+    const pageHeight = 297; // A4 height in mm
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
     let heightLeft = imgHeight;
 

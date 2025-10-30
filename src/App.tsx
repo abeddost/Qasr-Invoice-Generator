@@ -94,29 +94,20 @@ export default function App() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-          {/* Form Section */}
-          <div className="order-2 xl:order-1">
-            <InvoiceForm 
-              data={invoiceData}
-              onDataChange={setInvoiceData}
-              onSubmit={handleSubmit}
-              isSubmitting={isSubmitting}
-            />
-          </div>
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <InvoiceForm 
+          data={invoiceData}
+          onDataChange={setInvoiceData}
+          onSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
+        />
 
-          {/* Preview Section */}
-          <div className="order-1 xl:order-2 xl:sticky xl:top-8">
-            <div className="mb-4">
-              <h2 className="text-xl font-bold text-gray-900">Live-Vorschau</h2>
-              <p className="text-sm text-gray-600">Die Vorschau wird automatisch beim Ausfüllen aktualisiert</p>
-            </div>
-            <InvoicePreview 
-              data={invoiceData}
-              companyInfo={companyInfo}
-            />
-          </div>
+        {/* Hidden Preview for PDF generation */}
+        <div style={{ position: 'absolute', left: '-9999px', opacity: 0 }}>
+          <InvoicePreview 
+            data={invoiceData}
+            companyInfo={companyInfo}
+          />
         </div>
       </main>
 
