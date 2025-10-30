@@ -86,6 +86,10 @@ export default function InvoiceForm({ data, onDataChange, onSubmit, isSubmitting
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!data.versandoption) {
+      alert('Bitte wählen Sie eine Versandoption.');
+      return;
+    }
     onSubmit();
   };
 
