@@ -49,7 +49,7 @@ export const generatePDF = async (data: InvoiceData, companyInfo: CompanyInfo): 
 
     // Create canvas from HTML element
     const canvas = await html2canvas(element, {
-      scale: 2,
+      scale: 1.5,  // Reduced from 2 to 1.5 (still high quality but smaller)
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
@@ -75,7 +75,8 @@ export const generatePDF = async (data: InvoiceData, companyInfo: CompanyInfo): 
       element.style.cssText = style;
     });
 
-    const imgData = canvas.toDataURL('image/png');
+    // Use JPEG with 0.90 quality instead of PNG (huge file size reduction)
+    const imgData = canvas.toDataURL('image/jpeg', 0.90);
     const imgWidth = 210; // A4 width in mm
     const pageHeight = 297; // A4 height in mm
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
@@ -85,14 +86,14 @@ export const generatePDF = async (data: InvoiceData, companyInfo: CompanyInfo): 
     let position = 0;
 
     // Add first page
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
 
     // Add additional pages if needed
     while (heightLeft >= 0) {
       position = heightLeft - imgHeight;
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
     }
 
