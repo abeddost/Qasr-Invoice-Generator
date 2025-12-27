@@ -29,7 +29,11 @@ const initialData: InvoiceData = {
     photo3: null,
     photo3Notes: '',
     photo4: null,
-    photo4Notes: ''
+    photo4Notes: '',
+    photo5: null,
+    photo5Notes: '',
+    photo6: null,
+    photo6Notes: ''
   },
   lieferdatum: '',
   anzahlung: '',

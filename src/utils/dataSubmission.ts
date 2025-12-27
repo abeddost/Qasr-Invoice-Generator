@@ -47,6 +47,16 @@ export const submitToGoogleAppsScript = async (data: InvoiceData): Promise<void>
       formData.append('Sonderwuensche_Photo4', data.sonderWuensche.photo4);
     }
     formData.append('Sonderwuensche_Photo4Notes', data.sonderWuensche.photo4Notes);
+    
+    if (data.sonderWuensche.photo5) {
+      formData.append('Sonderwuensche_Photo5', data.sonderWuensche.photo5);
+    }
+    formData.append('Sonderwuensche_Photo5Notes', data.sonderWuensche.photo5Notes);
+    
+    if (data.sonderWuensche.photo6) {
+      formData.append('Sonderwuensche_Photo6', data.sonderWuensche.photo6);
+    }
+    formData.append('Sonderwuensche_Photo6Notes', data.sonderWuensche.photo6Notes);
 
     const response = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',

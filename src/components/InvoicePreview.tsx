@@ -122,7 +122,7 @@ export default function InvoicePreview({ data, companyInfo }: InvoicePreviewProp
       )}
 
       {/* Sonderwünsche */}
-      {(data.sonderWuensche.text || data.sonderWuensche.photo1 || data.sonderWuensche.photo2 || data.sonderWuensche.photo3 || data.sonderWuensche.photo4) && (
+      {(data.sonderWuensche.text || data.sonderWuensche.photo1 || data.sonderWuensche.photo2 || data.sonderWuensche.photo3 || data.sonderWuensche.photo4 || data.sonderWuensche.photo5 || data.sonderWuensche.photo6) && (
         <div className="mb-8">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Sonderwünsche</h2>
           <div className="bg-emerald-50 rounded-lg p-6">
@@ -133,7 +133,7 @@ export default function InvoicePreview({ data, companyInfo }: InvoicePreviewProp
               </div>
             )}
             
-            {(data.sonderWuensche.photo1 || data.sonderWuensche.photo2 || data.sonderWuensche.photo3 || data.sonderWuensche.photo4) && (
+            {(data.sonderWuensche.photo1 || data.sonderWuensche.photo2 || data.sonderWuensche.photo3 || data.sonderWuensche.photo4 || data.sonderWuensche.photo5 || data.sonderWuensche.photo6) && (
               <div>
                 <h3 className="font-medium text-gray-700 mb-2">Bilder:</h3>
                 <div className="space-y-4">
@@ -193,6 +193,36 @@ export default function InvoicePreview({ data, companyInfo }: InvoicePreviewProp
                         <p className="text-sm font-medium text-gray-700">Foto 4</p>
                         {data.sonderWuensche.photo4Notes && (
                           <p className="text-sm text-gray-600 mt-1">{data.sonderWuensche.photo4Notes}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {data.sonderWuensche.photo5 && (
+                    <div>
+                      <img 
+                        src={URL.createObjectURL(data.sonderWuensche.photo5)} 
+                        alt="Sonderwunsch Foto 5" 
+                        className="w-full h-64 object-cover rounded-lg border shadow-sm"
+                      />
+                      <div className="mt-2">
+                        <p className="text-sm font-medium text-gray-700">Foto 5</p>
+                        {data.sonderWuensche.photo5Notes && (
+                          <p className="text-sm text-gray-600 mt-1">{data.sonderWuensche.photo5Notes}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {data.sonderWuensche.photo6 && (
+                    <div>
+                      <img 
+                        src={URL.createObjectURL(data.sonderWuensche.photo6)} 
+                        alt="Sonderwunsch Foto 6" 
+                        className="w-full h-64 object-cover rounded-lg border shadow-sm"
+                      />
+                      <div className="mt-2">
+                        <p className="text-sm font-medium text-gray-700">Foto 6</p>
+                        {data.sonderWuensche.photo6Notes && (
+                          <p className="text-sm text-gray-600 mt-1">{data.sonderWuensche.photo6Notes}</p>
                         )}
                       </div>
                     </div>

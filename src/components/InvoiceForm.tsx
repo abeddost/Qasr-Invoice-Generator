@@ -14,6 +14,8 @@ export default function InvoiceForm({ data, onDataChange, onSubmit, isSubmitting
   const [photo2Preview, setPhoto2Preview] = useState<string | null>(null);
   const [photo3Preview, setPhoto3Preview] = useState<string | null>(null);
   const [photo4Preview, setPhoto4Preview] = useState<string | null>(null);
+  const [photo5Preview, setPhoto5Preview] = useState<string | null>(null);
+  const [photo6Preview, setPhoto6Preview] = useState<string | null>(null);
 
   useEffect(() => {
     if (data.sonderWuensche.photo1) {
@@ -55,6 +57,26 @@ export default function InvoiceForm({ data, onDataChange, onSubmit, isSubmitting
     }
   }, [data.sonderWuensche.photo4]);
 
+  useEffect(() => {
+    if (data.sonderWuensche.photo5) {
+      const url = URL.createObjectURL(data.sonderWuensche.photo5);
+      setPhoto5Preview(url);
+      return () => URL.revokeObjectURL(url);
+    } else {
+      setPhoto5Preview(null);
+    }
+  }, [data.sonderWuensche.photo5]);
+
+  useEffect(() => {
+    if (data.sonderWuensche.photo6) {
+      const url = URL.createObjectURL(data.sonderWuensche.photo6);
+      setPhoto6Preview(url);
+      return () => URL.revokeObjectURL(url);
+    } else {
+      setPhoto6Preview(null);
+    }
+  }, [data.sonderWuensche.photo6]);
+
   const handleInputChange = (field: string, value: string | number) => {
     const keys = field.split('.');
     const newData = { ...data };
@@ -70,7 +92,7 @@ export default function InvoiceForm({ data, onDataChange, onSubmit, isSubmitting
     onDataChange(newData);
   };
 
-  const handleFileChange = (fileNumber: 1 | 2 | 3 | 4, file: File | null) => {
+  const handleFileChange = (fileNumber: 1 | 2 | 3 | 4 | 5 | 6, file: File | null) => {
     const newData = { ...data };
     if (fileNumber === 1) {
       newData.sonderWuensche.photo1 = file;
@@ -78,8 +100,12 @@ export default function InvoiceForm({ data, onDataChange, onSubmit, isSubmitting
       newData.sonderWuensche.photo2 = file;
     } else if (fileNumber === 3) {
       newData.sonderWuensche.photo3 = file;
-    } else {
+    } else if (fileNumber === 4) {
       newData.sonderWuensche.photo4 = file;
+    } else if (fileNumber === 5) {
+      newData.sonderWuensche.photo5 = file;
+    } else {
+      newData.sonderWuensche.photo6 = file;
     }
     onDataChange(newData);
   };
@@ -423,6 +449,62 @@ export default function InvoiceForm({ data, onDataChange, onSubmit, isSubmitting
               {photo4Preview && (
                 <div className="mt-4">
                   <img src={photo4Preview} alt="Foto 4 Vorschau" className="w-full h-48 object-cover rounded-lg border shadow-sm" />
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <Upload className="inline w-4 h-4 mr-1" />
+                Foto 5 (JPG/PNG)
+              </label>
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png"
+                onChange={(e) => handleFileChange(5, e.target.files?.[0] || null)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              <div className="mt-3">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Notizen zu Foto 5</label>
+                <textarea
+                  value={data.sonderWuensche.photo5Notes}
+                  onChange={(e) => handleInputChange('sonderWuensche.photo5Notes', e.target.value)}
+                  rows={2}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
+                  placeholder="Beschreibung oder Anmerkungen zu diesem Foto..."
+                />
+              </div>
+              {photo5Preview && (
+                <div className="mt-4">
+                  <img src={photo5Preview} alt="Foto 5 Vorschau" className="w-full h-48 object-cover rounded-lg border shadow-sm" />
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <Upload className="inline w-4 h-4 mr-1" />
+                Foto 6 (JPG/PNG)
+              </label>
+              <input
+                type="file"
+                accept=".jpg,.jpeg,.png"
+                onChange={(e) => handleFileChange(6, e.target.files?.[0] || null)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              <div className="mt-3">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Notizen zu Foto 6</label>
+                <textarea
+                  value={data.sonderWuensche.photo6Notes}
+                  onChange={(e) => handleInputChange('sonderWuensche.photo6Notes', e.target.value)}
+                  rows={2}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
+                  placeholder="Beschreibung oder Anmerkungen zu diesem Foto..."
+                />
+              </div>
+              {photo6Preview && (
+                <div className="mt-4">
+                  <img src={photo6Preview} alt="Foto 6 Vorschau" className="w-full h-48 object-cover rounded-lg border shadow-sm" />
                 </div>
               )}
             </div>

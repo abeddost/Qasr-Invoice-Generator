@@ -22,6 +22,10 @@ export interface InvoiceData {
     photo3Notes: string;
     photo4: File | null;
     photo4Notes: string;
+    photo5: File | null;
+    photo5Notes: string;
+    photo6: File | null;
+    photo6Notes: string;
   };
   lieferdatum: string;
   anzahlung: number | string;
