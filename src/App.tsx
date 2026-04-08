@@ -43,9 +43,9 @@ const initialData: InvoiceData = {
 };
 
 const companyInfo: CompanyInfo = {
-  name: 'QASR Möbelhaus',
-  address: 'Industriestr. 17, 65474 Bischofsheim',
-  phone: '0176 1621 03 43'
+  name: 'Aria Möbelhaus',
+  address: 'Wiesbadener Landstraße 18, 65203 Wiesbaden',
+  phone: '004917642552752'
 };
 
 export default function App() {
@@ -90,7 +90,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">{companyInfo.name}</h1>
-              <p className="text-sm text-gray-600">Rechnungsgenerator</p>
+              <p className="text-sm text-gray-600">{companyInfo.address}</p>
               <p className="text-sm text-gray-600">{companyInfo.phone}</p>
             </div>
           </div>
