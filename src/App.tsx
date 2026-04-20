@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CheckCircle, XCircle } from 'lucide-react';
 import InvoiceForm from './components/InvoiceForm';
 import InvoicePreview from './components/InvoicePreview';
+import AdminDashboard from './components/AdminDashboard';
+import AdminLogin from './components/AdminLogin';
+import { supabase } from './lib/supabase';
 import { generatePDF } from './utils/pdfGenerator';
-import { submitToGoogleAppsScript } from './utils/dataSubmission';
+import { submitToSupabase } from './utils/supabaseSubmission';
 import type { InvoiceData, CompanyInfo } from './types/invoice';
+
+const ADMIN_PATH = '/admin420';
 
 const initialData: InvoiceData = {
   bestellnummer: '',
@@ -48,13 +53,40 @@ const companyInfo: CompanyInfo = {
   phone: '004917642552752'
 };
 
+function usePathname() {
+  const [pathname, setPathname] = useState(window.location.pathname);
+  useEffect(() => {
+    const onPop = () => setPathname(window.location.pathname);
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+  return pathname;
+}
+
 export default function App() {
+  const pathname = usePathname();
+  const isAdminRoute = pathname === ADMIN_PATH;
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(initialData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notification, setNotification] = useState<{
     type: 'success' | 'error';
     message: string;
   } | null>(null);
+
+  // Check existing session on mount
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setIsAuthenticated(!!data.session);
+      setAuthChecked(true);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
 
   const showNotification = (type: 'success' | 'error', message: string) => {
     setNotification({ type, message });
@@ -64,15 +96,9 @@ export default function App() {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      // Generate and download PDF
       await generatePDF(invoiceData, companyInfo);
-      
-      // Submit data to Google Apps Script
-      await submitToGoogleAppsScript(invoiceData);
-      
+      await submitToSupabase(invoiceData);
       showNotification('success', 'Rechnung gespeichert und PDF heruntergeladen.');
-      
-      // Reset form
       setInvoiceData(initialData);
     } catch (error) {
       console.error('Error processing invoice:', error);
@@ -82,45 +108,46 @@ export default function App() {
     }
   };
 
+  // Admin route — show login or dashboard, no main header/footer
+  if (isAdminRoute) {
+    if (!authChecked) return null;
+    if (!isAuthenticated) {
+      return <AdminLogin onLogin={() => setIsAuthenticated(true)} />;
+    }
+    return <AdminDashboard onLogout={() => setIsAuthenticated(false)} />;
+  }
+
+  // Public invoice form
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-emerald-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">{companyInfo.name}</h1>
-              <p className="text-sm text-gray-600">{companyInfo.address}</p>
-              <p className="text-sm text-gray-600">{companyInfo.phone}</p>
-            </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">{companyInfo.name}</h1>
+            <p className="text-sm text-gray-600">{companyInfo.address}</p>
+            <p className="text-sm text-gray-600">{companyInfo.phone}</p>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <InvoiceForm 
+        <InvoiceForm
           data={invoiceData}
           onDataChange={setInvoiceData}
           onSubmit={handleSubmit}
           isSubmitting={isSubmitting}
         />
 
-        {/* Hidden Preview for PDF generation */}
         <div style={{ position: 'absolute', left: '-9999px', opacity: 0 }}>
-          <InvoicePreview 
-            data={invoiceData}
-            companyInfo={companyInfo}
-          />
+          <InvoicePreview data={invoiceData} companyInfo={companyInfo} />
         </div>
       </main>
 
-      {/* Notification */}
       {notification && (
         <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-right-full duration-300">
           <div className={`flex items-center p-4 rounded-lg shadow-lg ${
-            notification.type === 'success' 
-              ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
+            notification.type === 'success'
+              ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
               : 'bg-red-100 text-red-800 border border-red-200'
           }`}>
             {notification.type === 'success' ? (
@@ -133,7 +160,6 @@ export default function App() {
         </div>
       )}
 
-      {/* Footer */}
       <footer className="bg-gray-50 border-t border-gray-200 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center text-sm text-gray-600">
