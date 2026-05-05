@@ -96,13 +96,21 @@ export default function App() {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      await generatePDF(invoiceData, companyInfo);
       await submitToSupabase(invoiceData);
-      showNotification('success', 'Rechnung gespeichert und PDF heruntergeladen.');
+
+      try {
+        await generatePDF(invoiceData, companyInfo);
+        showNotification('success', 'Rechnung gespeichert und PDF heruntergeladen.');
+      } catch (pdfError) {
+        console.error('Error generating invoice PDF:', pdfError);
+        showNotification('success', 'Rechnung gespeichert. PDF konnte auf diesem Gerät nicht heruntergeladen werden.');
+      }
+
       setInvoiceData(initialData);
     } catch (error) {
       console.error('Error processing invoice:', error);
-      showNotification('error', 'Fehler beim Verarbeiten der Rechnung. Bitte versuchen Sie es erneut.');
+      const message = error instanceof Error ? error.message : 'Unbekannter Fehler';
+      showNotification('error', `Fehler beim Speichern: ${message}`);
     } finally {
       setIsSubmitting(false);
     }

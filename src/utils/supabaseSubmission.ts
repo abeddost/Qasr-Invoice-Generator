@@ -3,6 +3,9 @@ import type { InvoiceData } from '../types/invoice';
 
 const BUCKET = 'invoice-photos';
 
+const emptyToNull = (value: string) => (value.trim() === '' ? null : value);
+const numberOrNull = (value: number | string) => (value === '' ? null : Number(value));
+
 async function uploadPhoto(
   file: File,
   bestellnummer: string,
@@ -23,6 +26,38 @@ async function uploadPhoto(
 }
 
 export async function submitToSupabase(data: InvoiceData): Promise<void> {
+  const invoicePayload = {
+    bestellnummer: data.bestellnummer,
+    datum: data.datum,
+    modell: data.modell,
+    farbe: data.farbe,
+    kategorien: emptyToNull(data.kategorien ?? ''),
+    versandoption: data.versandoption,
+    zahlungsart: data.zahlungsart,
+    lieferdatum: data.lieferdatum,
+    anzahlung: numberOrNull(data.anzahlung),
+    gesamtpreis: numberOrNull(data.gesamtpreis),
+    kundendaten_name: data.kundendaten.name,
+    kundendaten_strasse: data.kundendaten.strasse,
+    kundendaten_plz: data.kundendaten.plz,
+    kundendaten_ort: data.kundendaten.ort,
+    kundendaten_telefonnummer: data.kundendaten.telefonnummer,
+    kundendaten_email: emptyToNull(data.kundendaten.email),
+    sonderwuensche_text: emptyToNull(data.sonderWuensche.text),
+    photo1_notes: emptyToNull(data.sonderWuensche.photo1Notes),
+    photo2_notes: emptyToNull(data.sonderWuensche.photo2Notes),
+    photo3_notes: emptyToNull(data.sonderWuensche.photo3Notes),
+    photo4_notes: emptyToNull(data.sonderWuensche.photo4Notes),
+    photo5_notes: emptyToNull(data.sonderWuensche.photo5Notes),
+    photo6_notes: emptyToNull(data.sonderWuensche.photo6Notes),
+  };
+
+  const { error: insertError } = await supabase
+    .from('invoices')
+    .insert(invoicePayload);
+
+  if (insertError) throw new Error(`Datenbank-Fehler: ${insertError.message}`);
+
   const photos = [
     data.sonderWuensche.photo1,
     data.sonderWuensche.photo2,
@@ -32,43 +67,29 @@ export async function submitToSupabase(data: InvoiceData): Promise<void> {
     data.sonderWuensche.photo6,
   ];
 
-  const photoUrls = await Promise.all(
+  const uploadResults = await Promise.allSettled(
     photos.map((photo, i) =>
       photo ? uploadPhoto(photo, data.bestellnummer, i + 1) : Promise.resolve(null)
     )
   );
 
-  const { error } = await supabase.from('invoices').insert({
-    bestellnummer: data.bestellnummer,
-    datum: data.datum,
-    modell: data.modell,
-    farbe: data.farbe,
-    kategorien: data.kategorien ?? null,
-    versandoption: data.versandoption,
-    zahlungsart: data.zahlungsart,
-    lieferdatum: data.lieferdatum,
-    anzahlung: data.anzahlung === '' ? null : Number(data.anzahlung),
-    gesamtpreis: data.gesamtpreis === '' ? null : Number(data.gesamtpreis),
-    kundendaten_name: data.kundendaten.name,
-    kundendaten_strasse: data.kundendaten.strasse,
-    kundendaten_plz: data.kundendaten.plz,
-    kundendaten_ort: data.kundendaten.ort,
-    kundendaten_telefonnummer: data.kundendaten.telefonnummer,
-    kundendaten_email: data.kundendaten.email,
-    sonderwuensche_text: data.sonderWuensche.text,
-    photo1_url: photoUrls[0],
-    photo1_notes: data.sonderWuensche.photo1Notes,
-    photo2_url: photoUrls[1],
-    photo2_notes: data.sonderWuensche.photo2Notes,
-    photo3_url: photoUrls[2],
-    photo3_notes: data.sonderWuensche.photo3Notes,
-    photo4_url: photoUrls[3],
-    photo4_notes: data.sonderWuensche.photo4Notes,
-    photo5_url: photoUrls[4],
-    photo5_notes: data.sonderWuensche.photo5Notes,
-    photo6_url: photoUrls[5],
-    photo6_notes: data.sonderWuensche.photo6Notes,
-  });
+  const photoUpdates = uploadResults.reduce<Record<string, string>>((updates, result, i) => {
+    if (result.status === 'fulfilled' && result.value) {
+      updates[`photo${i + 1}_url`] = result.value;
+    } else if (result.status === 'rejected') {
+      console.error(`Foto ${i + 1} Upload fehlgeschlagen:`, result.reason);
+    }
+    return updates;
+  }, {});
 
-  if (error) throw new Error(`Datenbank-Fehler: ${error.message}`);
+  if (Object.keys(photoUpdates).length === 0) return;
+
+  const { error: updateError } = await supabase
+    .from('invoices')
+    .update(photoUpdates)
+    .eq('bestellnummer', data.bestellnummer);
+
+  if (updateError) {
+    console.error(`Foto-URLs konnten nicht gespeichert werden: ${updateError.message}`);
+  }
 }
